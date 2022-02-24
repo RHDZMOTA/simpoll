@@ -1,0 +1,3 @@
+# Simpoll
+
+`simpoll = simple + poll`
