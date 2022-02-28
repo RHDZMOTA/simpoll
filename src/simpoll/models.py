@@ -1,3 +1,4 @@
+import string
 import uuid
 import json
 import datetime as dt
@@ -88,6 +89,13 @@ class Question:
         return {
             opt.uuid: opt
             for opt in self.options
+        }
+
+    @property
+    def option_letter(self) -> Dict[str, str]:
+        return {
+            opt.uuid: string.ascii_uppercase[i]
+            for i, opt in enumerate(self.options)
         }
 
     def get_option(self, opt_uuid: str) -> Optional[Option]:
