@@ -11,6 +11,12 @@ SIMPOLL_DEFAULT_HELLO_WORLD = os.environ.get(
 
 SIMPOLL_LOG_LEVEL = os.getenv("SIMPOLL_LOG_LEVEL", "INFO")
 
+SIMPOLL_JWT_ENCRYPTION_ALGORITHM = os.environ.get(
+    "SIMPOLL_JWT_ENCRYPTION_ALGORITHM",
+    default="HS256"
+)
+
+
 logger_config = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -40,3 +46,15 @@ def get_logger(name: str, logger_config_dictionary: Optional[Dict] = None):
     config = logger_config_dictionary or logger_config
     dictConfig(config)
     return logging.getLogger(name)
+
+
+logger = get_logger(name=__name__)
+
+
+def _get_default_jwt_secret_key() -> str:
+    logger.warning("Using the default JWT Secret Key.")
+    return "default"
+
+
+def get_jwt_secret_key() -> str:
+    return os.environ.get("SIMPOLL_JWT_SECRET_KEY") or _get_default_jwt_secret_key()
