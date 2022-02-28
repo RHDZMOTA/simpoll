@@ -1,5 +1,6 @@
 import json
 import textwrap
+import string
 from typing import Dict, Optional, Tuple
 
 import streamlit as st
@@ -24,7 +25,8 @@ def display_question(
     with st.form("display-question-form", clear_on_submit=False):
         selection = st.multiselect(
             f"Select {num} option{'s' if num > 1 else ''}:",
-            format_func=lambda opt_uuid: question.option_hashtable.get(opt_uuid).content,
+            format_func=lambda opt_uuid:
+                f"""({question.option_letter.get(opt_uuid)}) {question.option_hashtable.get(opt_uuid).content}""",
             options=question.option_hashtable,
         )
         show_answers = st.checkbox("Show Answers")
@@ -58,14 +60,23 @@ def view(configs: Dict, jwt_instance: JsonWebToken):
         return configs
     if show_answers:
         answers = {opt.uuid for opt in answer.options}
-        correct_options = {opt.uuid for opt in question.options}
-        correct_answers = len(answers - correct_options)
-        st.write(f"Score: {round(100 * correct_answers / len(correct_options), 2)}")
+        table = [
+            {
+                "Your Answers": "Selected" if opt.uuid in answers else "Not Selected",
+                "Is Correct?": '✔' if opt.is_correct else '❌',
+                "Option": opt.content,
+            }
+            for opt in question.options
+        ]
+        st.table(table)
         st.markdown(
-            "\n".join(
-                f"- [{'X' if opt.uuid in answers else ' '}] {'✔' if opt.is_correct else '❌'} {opt.content}"
-                for opt in question.options
+            textwrap.dedent(
+                f"""
+                * Total Options: `{len(question.options)}`
+                * Total Correct Options: `{len([opt for opt in question.options if opt.is_correct])}`
+                * Total Selected: `{len(answers)}`
+                * Total Correct Selected: `{len([opt for opt in answer.options if opt.is_correct])}`
+                """
             )
         )
-        st.json(answer.payload)
     return configs
