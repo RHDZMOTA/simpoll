@@ -49,7 +49,7 @@ def view(configs: Dict, jwt_instance: JsonWebToken):
     )
     # Redirect
     redirect(
-        name="add_options",
+        name="option_add",
         configs={
             **configs,
             "question": question,
