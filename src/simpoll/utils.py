@@ -1,5 +1,7 @@
 import secrets
 import string
+from tempfile import NamedTemporaryFile
+from typing import Optional
 
 
 def get_random_string(
@@ -25,3 +27,8 @@ def get_short_id():
         include_digits=True,
     )
 
+
+def temp_file(content: str, suffix: Optional[str] = None, path: Optional[str] = None) -> str:
+    with NamedTemporaryFile(mode="r+", delete=False, dir=path, suffix=suffix) as file:
+        file.write(content)
+    return file.name
