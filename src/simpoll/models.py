@@ -34,6 +34,9 @@ class Question:
     short_id: str = field(
         default_factory=get_short_id
     )
+    metadata: Dict = field(
+        default_factory=dict
+    )
 
     @classmethod
     def _get_init_arglist(cls):
@@ -68,7 +71,8 @@ class Question:
                 "options": [
                     Option(**opt)
                     for opt in obj["options"]
-                ]
+                ],
+                "metadata": obj.get("metadata", {}),
             }
 
     @classmethod
