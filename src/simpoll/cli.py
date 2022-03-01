@@ -9,6 +9,8 @@ from .utils import temp_file
 from .settings import (
     get_logger,
     SIMPOLL_DEFAULT_HELLO_WORLD,
+    SIMPOLL_FLASK_HOST,
+    SIMPOLL_FLASK_PORT,
 )
 
 
@@ -54,3 +56,28 @@ class CLI:
             if os.path.isfile(temp_file_path):
                 os.remove(temp_file_path)
                 logger.warning("Temporary file correctly deleted: %s", temp_file_path)
+
+    def backend(
+            self,
+            host: Optional[str] = None,
+            port: Optional[str] = None,
+            debug: bool = False,
+            production: bool = False,
+    ):
+        # Default values
+        host = host or SIMPOLL_FLASK_HOST
+        port = port or SIMPOLL_FLASK_PORT
+        # Ge server & flask application
+        from simpoll.backend import app
+        if not production:
+            return app.run(
+                host=host,
+                port=port,
+                debug=debug,
+            )
+        from waitress import serve
+        return serve(
+            app,
+            host=host,
+            port=port,
+        )
