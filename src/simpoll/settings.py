@@ -17,6 +17,17 @@ SIMPOLL_JWT_ENCRYPTION_ALGORITHM = os.environ.get(
 )
 
 
+SIMPOLL_FLASK_HOST = os.environ.get(
+    "SIMPOLL_FLASK_HOST",
+    default="127.0.0.1",
+)
+
+SIMPOLL_FLASK_PORT = os.environ.get(
+    "SIMPOLL_FLASK_PORT",
+    default="8080"
+)
+
+
 logger_config = {
     "version": 1,
     "disable_existing_loggers": False,
